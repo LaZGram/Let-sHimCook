@@ -44,15 +44,17 @@ exports.googleLogin = async (req, res) => {
       audience: process.env.GOOGLE_CLIENT_ID,
     });
     const payload = ticket.getPayload();
-    const email = payload.email;
-    const name = payload.name;
+    const { email, name, picture, sub: googleId } = payload;
     let user = await User.findOne({ email });
     if (!user) {
-      user = await User.create({ name, email });
+      user = await User.create({ name, email, googleId, picture });
+    } else {
+      user.googleId = googleId;
+      user.picture = picture;
+      await user.save();
     }
-    console.log('hello')
     const jwtToken = generateToken(user);
-    res.json({ token: jwtToken });
+    res.json({ token: jwtToken, user: { name: user.name, email: user.email, picture: user.picture } });
   } catch (err) {
     res.status(400).json({ message: 'Google authentication failed' });
   }
