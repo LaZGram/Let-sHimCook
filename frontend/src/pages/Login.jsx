@@ -25,6 +25,10 @@ function Login() {
               { token: cred.credential }
             );
             localStorage.setItem('token', data.token);
+            if (data.user) {
+              localStorage.setItem('user', JSON.stringify(data.user));
+            }
+            window.location.href = '/';
           }}
           onError={() => console.log('Google Login Failed')}
         />
