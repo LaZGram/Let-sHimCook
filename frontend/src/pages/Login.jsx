@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { GoogleLogin } from '@react-oauth/google';
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -32,6 +33,18 @@ function Login() {
       <button className="bg-blue-500 text-white p-2" onClick={handleLogin}>
         Login
       </button>
+      <div className="mt-4">
+        <GoogleLogin
+          onSuccess={async (cred) => {
+            const { data } = await axios.post(
+              'http://localhost:5000/api/auth/google',
+              { token: cred.credential }
+            );
+            localStorage.setItem('token', data.token);
+          }}
+          onError={() => console.log('Google Login Failed')}
+        />
+      </div>
     </div>
   );
 }
