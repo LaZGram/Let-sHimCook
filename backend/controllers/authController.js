@@ -48,8 +48,9 @@ exports.googleLogin = async (req, res) => {
     const name = payload.name;
     let user = await User.findOne({ email });
     if (!user) {
-      user = await User.create({ name, email, password: Math.random().toString(36) });
+      user = await User.create({ name, email });
     }
+    console.log('hello')
     const jwtToken = generateToken(user);
     res.json({ token: jwtToken });
   } catch (err) {
